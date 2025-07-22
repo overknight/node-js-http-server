@@ -37,6 +37,26 @@ const defaultPageTitle = "Simple HTTP Server",
       margin-right: 15px;
     }
     a:hover { text-decoration: underline; }`
+  }),
+  resourceNotFoundPageTemplate = require("./html-page-template")({
+    defaultPageTitle: "Resource not found",
+    headStylesheet: `    body { 
+    font-family: Arial, sans-serif; 
+      max-width: 800px; 
+      margin: 50px auto; 
+      padding: 20px;
+      background-color: #f5f5f5;
+      text-align: center;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 { color: #dc3545; }
+    a { color: #007bff; text-decoration: none; }
+    a:hover { text-decoration: underline; }`
   })
 
 const regexp_extractQuery = /^(.*?)(?:\?(.*)|$)/
@@ -121,10 +141,14 @@ const server = createServer((req, res) => {
   }
   res.statusCode = 404
   if (req.headers.accept.includes("text/html")){
-    res.setHeader("Content-Type", "text/plain; charset=utf-8")
-    res.end("Error 404: Not found")
+    resourceNotFoundPageTemplate(res, `\n  <div class="container">
+    <h1>❌ 404 - Resource not found</h1>
+    <p>The requested resource <strong>${path}</strong> was not found.</p>
+    <p><a href="/">← Back to the Main Page</a></p>
+  </div>\n`)
     return
   }
+  res.removeHeader("Content-Type")
   res.end()
 })
 
