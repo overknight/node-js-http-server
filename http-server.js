@@ -110,9 +110,12 @@ const server = createServer((req, res) => {
     if (timestamp) {
       res.setHeader("Content-Type", "text/plain; charset=utf-8")
       const date = new Date(timestamp)
-      res.end(`0${date.getDate()}`.slice(-2)+"."+`0${date.getMonth()+1}`.slice(-2)+"."+`${date.getFullYear()}`+" "+
-        `0${date.getHours()}`.slice(-2)+":"+`0${date.getMinutes()}`.slice(-2)+":"+`0${date.getSeconds()}`.slice(-2)+
-        `\ntimezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`)
+      const {format} = Intl.DateTimeFormat("ru-RU", {
+        dateStyle: "short",
+        timeStyle: "long",
+        timeZone: "Europe/Moscow",
+      })
+      res.end(format(date))
       return
     }
   }
